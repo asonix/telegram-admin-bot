@@ -287,9 +287,7 @@ fn main() {
     let chat_id = config.admin_chat_id;
 
     bot.register(bot.new_cmd("/start").and_then(start));
-
     bot.register(bot.new_cmd("/admins").and_then(admins));
-
     bot.register(bot.new_cmd("/relay").and_then(move |(bot, msg)| {
         relay(bot, msg, chat_id)
     }));
