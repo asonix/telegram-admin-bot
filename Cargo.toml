@@ -1,0 +1,10 @@
+[package]
+name = "admin_bot"
+version = "0.1.0"
+authors = ["Riley Trautman <asonix@tamu.edu>"]
+
+[dependencies]
+telebot = "0.2.1"
+tokio-core = "0.1"
+futures = "0.1"
+dotenv = "0.10"
