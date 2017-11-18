@@ -1,7 +1,13 @@
 [package]
 name = "admin_bot"
+description = "A telegram bot to assist with administration of chats"
 version = "0.1.0"
+license = "GPL-3.0"
+license-file = "LICENSE"
 authors = ["Riley Trautman <asonix@tamu.edu>"]
+repository = "https://github.com/asonix/telegram-admin-bot"
+readme = "README.md"
+keywords = ["telegram", "administration"]
 
 [dependencies]
 telebot = "0.2.1"
