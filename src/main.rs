@@ -23,11 +23,15 @@ use telebot::bot::RcBot;
 use tokio_core::reactor::Core;
 use futures::IntoFuture;
 use futures::stream::Stream;
+use futures::future::Future;
+
+use telebot::functions::*;
 
 use admin_bot::Config;
 use admin_bot::commands::*;
 
 fn main() {
+    println!("Starting bot");
     let config = Config::new();
 
     let mut lp = Core::new().unwrap();
@@ -44,6 +48,13 @@ fn main() {
     let stream = bot.get_stream().filter_map(|(bot, update)| {
         forward(bot, update, chat_id)
     });
+
+    bot.inner.handle.spawn(
+        bot.message(chat_id, "Bot Started".into())
+            .send()
+            .map(|_| ())
+            .map_err(|_| ()),
+    );
 
     lp.run(stream.for_each(|_| Ok(())).into_future()).unwrap();
 }
