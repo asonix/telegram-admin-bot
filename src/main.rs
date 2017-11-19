@@ -44,6 +44,7 @@ fn main() {
     bot.register(bot.new_cmd("/relay").and_then(move |(bot, msg)| {
         relay(bot, msg, chat_id)
     }));
+    bot.register(bot.new_cmd("/health").and_then(health_check));
 
     let stream = bot.get_stream().filter_map(|(bot, update)| {
         forward(bot, update, chat_id)

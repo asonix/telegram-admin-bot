@@ -13,14 +13,15 @@
 // You should have received a copy of the GNU General Public License
 // along with AdminBot  If not, see <http://www.gnu.org/licenses/>.
 
-mod start;
-mod forward;
-mod relay;
-mod admins;
-mod health;
+use telebot::bot::RcBot;
+use telebot::objects::Message;
+use telebot::error::Error as BotError;
+use futures::future::Future;
 
-pub use self::start::start;
-pub use self::forward::forward;
-pub use self::relay::relay;
-pub use self::admins::admins;
-pub use self::health::health_check;
+use telebot::functions::*;
+
+pub fn health_check<'a>(
+    tup: (RcBot, Message),
+) -> impl Future<Item = (RcBot, Message), Error = BotError> + 'a {
+    tup.0.message(tup.1.chat.id, "Running".into()).send()
+}
