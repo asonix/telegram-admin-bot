@@ -1,1 +1,6 @@
-LD_LIBRARY_PATH=/usr/arm-linux-gnueabihf/lib:/home/asonix/Development/armv7h/lib: RUSTFLAGS='-C target-feature=-crt-static -L native=/usr/arm-linux-gnueabihf/lib -L native=/home/asonix/Development/armv7h/lib' OPENSSL_DIR=/home/asonix/Development/armv7h PKG_CONFIG_ALLOW_CROSS=1 cargo build --target armv7-unknown-linux-gnueabihf --release
+#!/usr/bin/env bash
+
+export RUSTFLAGS='-C target-feature=-crt-static -L native=/usr/arm-linux-gnueabihf/lib -L native=/home/asonix/Development/armv7h/lib'
+export OPENSSL_DIR=/home/asonix/Development/armv7h
+export PKG_CONFIG_ALLOW_CROSS=1
+cargo build --target armv7-unknown-linux-gnueabihf --release
