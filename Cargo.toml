@@ -9,7 +9,7 @@ readme = "README.md"
 keywords = ["telegram", "administration"]
 
 [dependencies]
-telebot = "0.2.1"
+telebot = "0.2.4"
 tokio-core = "0.1"
 futures = "0.1"
 dotenv = "0.10"

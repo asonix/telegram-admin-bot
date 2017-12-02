@@ -42,9 +42,11 @@ fn main() {
     bot.register(bot.new_cmd("/start").and_then(start));
     bot.register(bot.new_cmd("/admins").and_then(admins));
     bot.register(bot.new_cmd("/relay").and_then(move |(bot, msg)| {
-        relay(bot, msg, chat_id)
+        relay(&bot, &msg, chat_id)
     }));
-    bot.register(bot.new_cmd("/health").and_then(health_check));
+    bot.register(bot.new_cmd("/health").and_then(move |(bot, msg)| {
+        health_check(&bot, &msg)
+    }));
 
     let stream = bot.get_stream().filter_map(|(bot, update)| {
         forward(bot, update, chat_id)
@@ -57,5 +59,15 @@ fn main() {
             .map_err(|_| ()),
     );
 
-    lp.run(stream.for_each(|_| Ok(())).into_future()).unwrap();
+    let res: Result<(), ()> = lp.run(
+        stream
+            .for_each(|_| Ok(()))
+            .or_else(|e| {
+                println!("Error: {:?}", e);
+                Ok(())
+            })
+            .into_future(),
+    );
+
+    res.unwrap();
 }

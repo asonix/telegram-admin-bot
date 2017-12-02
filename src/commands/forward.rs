@@ -134,7 +134,7 @@ fn kind(bot: &RcBot, msg: &Message, chat_id: Integer) -> &'static str {
     }
 }
 
-pub fn forward<'a>(bot: RcBot, update: Update, chat_id: Integer) -> Option<(RcBot, Update)> {
+pub fn forward(bot: RcBot, update: Update, chat_id: Integer) -> Option<(RcBot, Update)> {
     if let Some(ref msg) = update.message {
         if msg.chat.kind == "private" {
             if msg.forward_from.is_some() {

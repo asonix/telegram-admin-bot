@@ -21,8 +21,8 @@ use futures::future::Future;
 use telebot::functions::*;
 
 pub fn relay<'a>(
-    bot: RcBot,
-    msg: Message,
+    bot: &RcBot,
+    msg: &Message,
     chat_id: Integer,
 ) -> impl Future<Item = (RcBot, Message), Error = BotError> + 'a {
     if msg.chat.kind != "private" {

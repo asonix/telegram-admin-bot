@@ -21,7 +21,8 @@ use futures::future::Future;
 use telebot::functions::*;
 
 pub fn health_check<'a>(
-    tup: (RcBot, Message),
+    bot: &RcBot,
+    msg: &Message,
 ) -> impl Future<Item = (RcBot, Message), Error = BotError> + 'a {
-    tup.0.message(tup.1.chat.id, "Running".into()).send()
+    bot.message(msg.chat.id, "Running".into()).send()
 }

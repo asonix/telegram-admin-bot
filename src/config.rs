@@ -24,6 +24,20 @@ pub struct Config {
 
 impl Config {
     pub fn new() -> Self {
+        Self::default()
+    }
+
+    pub fn token(&self) -> &str {
+        &self.token
+    }
+
+    pub fn admin_chat_id(&self) -> Integer {
+        self.admin_chat_id
+    }
+}
+
+impl Default for Config {
+    fn default() -> Self {
         dotenv().ok();
 
         Config {
@@ -35,13 +49,5 @@ impl Config {
                 .parse::<Integer>()
                 .expect("Failed to parse chat id"),
         }
-    }
-
-    pub fn token(&self) -> &str {
-        &self.token
-    }
-
-    pub fn admin_chat_id(&self) -> Integer {
-        self.admin_chat_id
     }
 }
