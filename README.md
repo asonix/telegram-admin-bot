@@ -29,11 +29,15 @@ Description=A bot to help with adminning Coconuts
 After=network.target
 
 [Service]
+Type=simple
 User=admins
 Group=admins
 Environment="TELEGRAM_BOT_TOKEN=123456789:ABCDEFGHIJK_LMNOPQRSTUVWXYZ123456"
 Environment="ADMIN_CHAT_ID=-123456789"
+Environment="RUST_BACKTRACE=1"
 ExecStart=/home/admins/.cargo/bin/admin_bot
+TimeoutSec=90
+Restart=always
 
 [Install]
 WantedBy=default.target
