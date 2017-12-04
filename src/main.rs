@@ -103,11 +103,12 @@ fn main() {
 
     let res: Result<(), ()> = lp.run(
         stream
-            .for_each(|_| Ok(()))
+            .map(|_| ())
             .or_else(|e| {
                 error!("Error: {:?}", e);
                 Ok(())
             })
+            .for_each(|_| Ok(()))
             .into_future(),
     );
 
