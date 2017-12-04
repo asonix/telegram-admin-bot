@@ -35,6 +35,7 @@ Group=admins
 Environment="TELEGRAM_BOT_TOKEN=123456789:ABCDEFGHIJK_LMNOPQRSTUVWXYZ123456"
 Environment="ADMIN_CHAT_ID=-123456789"
 Environment="RUST_BACKTRACE=1"
+Environment="RUST_LOG=admin_bot=debug"
 ExecStart=/home/admins/.cargo/bin/admin_bot
 TimeoutSec=90
 Restart=always
