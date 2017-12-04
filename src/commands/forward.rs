@@ -42,7 +42,7 @@ fn kind(bot: &RcBot, msg: &Message, chat_id: Integer) -> &'static str {
                 .audio(audio.file_id.clone())
                 .send()
                 .map(|_| ())
-                .map_err(|_| ()),
+                .map_err(|e| error!("Error: {:?}", e)),
         );
         "audio"
     } else if let Some(ref document) = msg.document {
@@ -51,7 +51,7 @@ fn kind(bot: &RcBot, msg: &Message, chat_id: Integer) -> &'static str {
                 .document(document.file_id.clone())
                 .send()
                 .map(|_| ())
-                .map_err(|_| ()),
+                .map_err(|e| error!("Error: {:?}", e)),
         );
         "document"
     } else if msg.game.is_some() {
@@ -62,7 +62,7 @@ fn kind(bot: &RcBot, msg: &Message, chat_id: Integer) -> &'static str {
                 .photo(photo[0].file_id.clone())
                 .send()
                 .map(|_| ())
-                .map_err(|_| ()),
+                .map_err(|e| error!("Error: {:?}", e)),
         );
         "photo"
     } else if let Some(ref sticker) = msg.sticker {
@@ -71,7 +71,7 @@ fn kind(bot: &RcBot, msg: &Message, chat_id: Integer) -> &'static str {
                 .sticker(sticker.file_id.clone())
                 .send()
                 .map(|_| ())
-                .map_err(|_| ()),
+                .map_err(|e| error!("Error: {:?}", e)),
         );
         "sticker"
     } else if let Some(ref video) = msg.video {
@@ -80,7 +80,7 @@ fn kind(bot: &RcBot, msg: &Message, chat_id: Integer) -> &'static str {
                 .video(video.file_id.clone())
                 .send()
                 .map(|_| ())
-                .map_err(|_| ()),
+                .map_err(|e| error!("Error: {:?}", e)),
         );
         "video"
     } else if let Some(ref voice) = msg.voice {
@@ -89,7 +89,7 @@ fn kind(bot: &RcBot, msg: &Message, chat_id: Integer) -> &'static str {
                 .voice(voice.file_id.clone())
                 .send()
                 .map(|_| ())
-                .map_err(|_| ()),
+                .map_err(|e| error!("Error: {:?}", e)),
         );
         "voice"
     } else if let Some(ref contact) = msg.contact {
@@ -100,7 +100,7 @@ fn kind(bot: &RcBot, msg: &Message, chat_id: Integer) -> &'static str {
                 contact.first_name.clone(),
             ).send()
                 .map(|_| ())
-                .map_err(|_| ()),
+                .map_err(|e| error!("Error: {:?}", e)),
         );
         "contact"
     } else if let Some(ref location) = msg.location {
@@ -108,7 +108,7 @@ fn kind(bot: &RcBot, msg: &Message, chat_id: Integer) -> &'static str {
             bot.location(chat_id, location.longitude, location.latitude)
                 .send()
                 .map(|_| ())
-                .map_err(|_| ()),
+                .map_err(|e| error!("Error: {:?}", e)),
         );
         "location"
     } else if let Some(ref venue) = msg.venue {
@@ -126,7 +126,7 @@ fn kind(bot: &RcBot, msg: &Message, chat_id: Integer) -> &'static str {
             } else {
                 v.send()
             }.map(|_| ())
-                .map_err(|_| ()),
+                .map_err(|e| error!("Error: {:?}", e)),
         );
         "venue"
     } else {
@@ -170,8 +170,8 @@ pub fn forward(bot: RcBot, update: Update, chat_id: Integer) -> Option<(RcBot, U
                     .send()
                     .join(bot.message(msg.chat.id, String::from("Report sent\n\nIf you would like to provide more information, please send it in this chat")).send())
                     .map(|_| ())
-                    .map_err(|_| ()),
-                    );
+                    .map_err(|e| error!("Error: {:?}", e))
+                );
                 return None;
             } else {
                 let mut text = Vec::new();
@@ -190,7 +190,7 @@ pub fn forward(bot: RcBot, update: Update, chat_id: Integer) -> Option<(RcBot, U
                                 .send(),
                         )
                         .map(|_| ())
-                        .map_err(|_| ()),
+                        .map_err(|e| error!("Error: {:?}", e)),
                 );
             }
         }

@@ -19,6 +19,9 @@ extern crate telebot;
 extern crate dotenv;
 extern crate futures;
 
+#[macro_use]
+extern crate log;
+
 mod config;
 pub mod commands;
 

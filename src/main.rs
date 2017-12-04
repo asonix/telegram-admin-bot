@@ -18,6 +18,9 @@ extern crate tokio_core;
 extern crate futures;
 extern crate dotenv;
 extern crate admin_bot;
+#[macro_use]
+extern crate log;
+extern crate env_logger;
 
 use telebot::bot::RcBot;
 use tokio_core::reactor::Core;
@@ -31,7 +34,8 @@ use admin_bot::Config;
 use admin_bot::commands::*;
 
 fn main() {
-    println!("Starting bot");
+    env_logger::init().unwrap();
+    info!("Starting bot");
     let config = Config::new();
 
     let mut lp = Core::new().unwrap();
@@ -56,14 +60,14 @@ fn main() {
         bot.message(chat_id, "Bot Started".into())
             .send()
             .map(|_| ())
-            .map_err(|_| ()),
+            .map_err(|e| error!("Error: {:?}", e)),
     );
 
     let res: Result<(), ()> = lp.run(
         stream
             .for_each(|_| Ok(()))
             .or_else(|e| {
-                println!("Error: {:?}", e);
+                error!("Error: {:?}", e);
                 Ok(())
             })
             .into_future(),
