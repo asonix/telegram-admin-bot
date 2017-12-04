@@ -33,6 +33,42 @@ use telebot::functions::*;
 use admin_bot::Config;
 use admin_bot::commands::*;
 
+fn init_bot(bot: RcBot) {
+    bot.inner.handle.spawn(
+        bot.get_me()
+            .send()
+            .map_err(|e| println!("Error: {:?}", e))
+            .and_then(|(bot, user)| {
+                let pairs = bot.inner
+                    .handlers
+                    .borrow()
+                    .iter()
+                    .map(|(key, value)| (key.clone(), value.clone()))
+                    .collect::<Vec<_>>();
+
+                let username = if let Some(username) = user.username {
+                    username
+                } else {
+                    return Err(());
+                };
+
+                for (key, value) in pairs {
+                    bot.inner.handlers.borrow_mut().insert(
+                        format!(
+                            "{}@{}",
+                            key,
+                            username
+                        ),
+                        value,
+                    );
+                }
+
+                Ok(())
+            }),
+    );
+}
+
+
 fn main() {
     env_logger::init().unwrap();
     info!("Starting bot");
@@ -40,6 +76,8 @@ fn main() {
 
     let mut lp = Core::new().unwrap();
     let bot = RcBot::new(lp.handle(), config.token()).update_interval(100);
+
+    init_bot(bot.clone());
 
     let chat_id = config.admin_chat_id();
 
