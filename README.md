@@ -66,6 +66,16 @@ Restart=always
 WantedBy=default.target
 ```
 
+
+#### On Windows
+In powershell, navigate to the folder that contains the .exe file and run the following commands
+```powershell
+$env:RUST_LOG = "admin_bot=info"
+$env:TELEGRAM_BOT_TOKEN = "YOUR_TELEGRAM_TOKEN"
+$env:ADMIN_CHAT_ID = "YOUR_ADMIN_CHAT"
+.\admin_bot.exe
+```
+
 ### License
 
 AdminBot is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
