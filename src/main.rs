@@ -33,7 +33,7 @@ use telebot::functions::*;
 use admin_bot::Config;
 use admin_bot::commands::*;
 
-fn init_bot(bot: RcBot) {
+fn init_bot(bot: &RcBot) {
     bot.inner.handle.spawn(
         bot.get_me()
             .send()
@@ -77,7 +77,7 @@ fn main() {
     let mut lp = Core::new().unwrap();
     let bot = RcBot::new(lp.handle(), config.token()).update_interval(100);
 
-    init_bot(bot.clone());
+    init_bot(&bot);
 
     let chat_id = config.admin_chat_id();
 
