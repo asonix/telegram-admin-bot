@@ -1,6 +1,8 @@
 # AdminBot
 AdminBot was created to assist in managing a series of related groupchats on Telegram.
 
+[Crates.io](https://crates.io/crates/admin_bot)
+
 ### Information
 1. If you wish to say something to the admins in chat, you can type `/relay` with thatever it is you want to tell the admins and the bot will forward what you said to a designated admin chat.
 2. If you want to be anonymous, you can DM the bot and whatever you send will be anonymously forwarded to a designated admin chat.
@@ -8,9 +10,29 @@ AdminBot was created to assist in managing a series of related groupchats on Tel
 4. If you just want to @ the admins of the current chat you're in you can do so by typing `/admins`
 
 ### Using the bot
+
 First, make sure you talk to @BotFather to get a bot token. Add your bot to the admin chat, and then send a message.
 
 Go to `https://api.telegram.org/bot<YourBOTToken>/getUpdates` to view the current updates for your bot, and get the chat ID. It should be a negative number.
+
+#### From Release Binary
+If there is a [release for your operating system and architecture](https://github.com/asonix/telegram-admin-bot/releases), you can use the following command to run it:
+```bash
+TELEGRAM_BOT_TOKEN="your token" \
+ADMIN_CHAT_ID="your admin chat" \
+./path/to/the/binary
+```
+
+#### From crates.io
+This bot requires Rust Nightly to compile.
+
+The following command will download telecord, compile it, and put the binary in `~/.cargo/bin`
+```bash
+cargo install telecord
+```
+
+#### From Source
+This bot requires Rust Nightly to compile.
 
 copy .env.sample to .env and set the required values.
 ```
@@ -22,7 +44,8 @@ Run `cargo run` from the project directory to run the project.
 
 If you want to install this binary directly with `cargo install`, make sure the `TELEGRAM_BOT_TOKEN` and `ADMIN_CHAT_ID` environment variables are set.
 
-Here is an example Systemd Unit file
+#### As a system process with SystemD
+After you have the bot compiled, copy the binary wherever you want it and make a systemd unit file based on the following template.
 ```
 [Unit]
 Description=A bot to help with adminning Coconuts
@@ -30,13 +53,12 @@ After=network.target
 
 [Service]
 Type=simple
-User=admins
-Group=admins
+User=your-admin_bot-user
+Group=your-admin_bot-group
 Environment="TELEGRAM_BOT_TOKEN=123456789:ABCDEFGHIJK_LMNOPQRSTUVWXYZ123456"
 Environment="ADMIN_CHAT_ID=-123456789"
-Environment="RUST_BACKTRACE=1"
-Environment="RUST_LOG=admin_bot=debug"
-ExecStart=/home/admins/.cargo/bin/admin_bot
+Environment="RUST_LOG=admin_bot=info"
+ExecStart=/path/to/admin_bot/binary
 TimeoutSec=90
 Restart=always
 
