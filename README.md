@@ -66,14 +66,23 @@ Restart=always
 WantedBy=default.target
 ```
 
-
 #### On Windows
+##### With the -msvc release and powershell
 In powershell, navigate to the folder that contains the .exe file and run the following commands
 ```powershell
 $env:RUST_LOG = "admin_bot=info"
 $env:TELEGRAM_BOT_TOKEN = "YOUR_TELEGRAM_TOKEN"
 $env:ADMIN_CHAT_ID = "YOUR_ADMIN_CHAT"
 .\admin_bot.exe
+```
+
+##### With the -gnu release and mingw
+In bash, navigate to the folder that contains the .exe file and run the following commands
+```bash
+RUST_LOG=admin_bot=info \
+TELEGRAM_BOT_TOKEN="123456789:ABCDEFGHIJK_LMNOPQRSTUVWXYZ123456" \
+ADMIN_CHAT_ID="-123456789" \
+./admin_bot.exe
 ```
 
 ### License

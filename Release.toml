@@ -1,0 +1,23 @@
+release_path = "/home/asonix/Development/rust/releases"
+license = "LICENSE"
+readme = "README.md"
+
+[config.Linux.aarch64]
+libs = ["/usr/aarch64-linux-gnu/lib", "/home/asonix/Development/aarch64/lib"]
+env = { OPENSSL_DIR = "/home/asonix/Development/aarch64", PKG_CONFIG_ALLOW_CROSS = "1" }
+
+[config.Linux.armv7h]
+libs = ["/usr/arm-linux-gnueabihf/lib", "/home/asonix/Development/armeabi/lib"]
+env = { OPENSSL_DIR = "/home/asonix/Development/armeabi", PKG_CONFIG_ALLOW_CROSS = "1" }
+
+[config.Linux.armh]
+libs = ["/usr/arm-linux-gnueabihf/lib", "/home/asonix/Development/armeabi/lib"]
+env = { OPENSSL_DIR = "/home/asonix/Development/armeabi", PKG_CONFIG_ALLOW_CROSS = "1" }
+
+[config.Linux.amd64]
+libs = []
+env = {}
+
+[config.Windows.amd64]
+libs = ["/usr/x86_64-w64-mingw32/lib"]
+env = { PKG_CONFIG_ALLOW_CROSS = "1" }
