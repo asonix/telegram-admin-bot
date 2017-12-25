@@ -10,7 +10,7 @@ readme = "README.md"
 keywords = ["telegram", "administration"]
 
 [dependencies]
-telebot = "0.2.5"
+telebot = { git = "https://github.com/asonix/telebot", branch = "asonix/hyper" }
 tokio-core = "0.1"
 futures = "0.1"
 dotenv = "0.10"
