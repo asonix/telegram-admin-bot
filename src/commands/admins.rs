@@ -15,14 +15,14 @@
 
 use telebot::bot::RcBot;
 use telebot::objects::Message;
-use telebot::error::Error as BotError;
+use failure::Error;
 use futures::future::Future;
 
 use telebot::functions::*;
 
 pub fn admins<'a>(
     tup: (RcBot, Message),
-) -> impl Future<Item = (RcBot, Message), Error = BotError> + 'a {
+) -> impl Future<Item = (RcBot, Message), Error = Error> + 'a {
     let bot = tup.0;
     let msg = tup.1;
     let chat_id = msg.chat.id;

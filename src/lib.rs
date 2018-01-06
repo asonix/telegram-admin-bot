@@ -18,6 +18,7 @@
 extern crate telebot;
 extern crate dotenv;
 extern crate futures;
+extern crate failure;
 
 #[macro_use]
 extern crate log;

@@ -14,8 +14,8 @@
 // along with AdminBot  If not, see <http://www.gnu.org/licenses/>.
 
 use telebot::bot::RcBot;
-use telebot::error::Error as BotError;
 use telebot::objects::{Integer, Message};
+use failure::Error;
 use futures::future::Future;
 
 use telebot::functions::*;
@@ -24,7 +24,7 @@ pub fn relay<'a>(
     bot: &RcBot,
     msg: &Message,
     chat_id: Integer,
-) -> impl Future<Item = (RcBot, Message), Error = BotError> + 'a {
+) -> impl Future<Item = (RcBot, Message), Error = Error> + 'a {
     if msg.chat.kind != "private" {
         let text = match msg.text {
             Some(ref text) => text.clone(),

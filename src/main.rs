@@ -24,7 +24,6 @@ extern crate env_logger;
 
 use telebot::bot::RcBot;
 use tokio_core::reactor::Core;
-use futures::IntoFuture;
 use futures::stream::Stream;
 use futures::future::Future;
 
@@ -90,10 +89,6 @@ fn main() {
         health_check(&bot, &msg)
     }));
 
-    let stream = bot.get_stream().filter_map(|(bot, update)| {
-        forward(bot, update, chat_id)
-    });
-
     bot.inner.handle.spawn(
         bot.message(chat_id, "Bot Started".into())
             .send()
@@ -101,16 +96,18 @@ fn main() {
             .map_err(|e| error!("Error: {:?}", e)),
     );
 
-    let res: Result<(), ()> = lp.run(
-        stream
-            .map(|_| ())
-            .or_else(|e| {
-                error!("Error: {:?}", e);
-                Ok(())
-            })
-            .for_each(|_| Ok(()))
-            .into_future(),
-    );
+    loop {
+        let stream = bot.get_stream()
+            .filter_map(|(bot, update)| forward(bot, update, chat_id))
+            .map_err(|e| error!("Error: {:?}", e))
+            .for_each(|_| Ok(()));
 
-    res.unwrap();
+        let res: Result<(), ()> = lp.run(stream);
+
+        if let Err(e) = res {
+            error!("Loop ended! {:?}", e);
+        } else {
+            info!("Loop ended!");
+        }
+    }
 }
