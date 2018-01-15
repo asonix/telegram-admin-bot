@@ -96,18 +96,10 @@ fn main() {
             .map_err(|e| error!("Error: {:?}", e)),
     );
 
-    loop {
-        let stream = bot.get_stream()
-            .filter_map(|(bot, update)| forward(bot, update, chat_id))
-            .map_err(|e| error!("Error: {:?}", e))
-            .for_each(|_| Ok(()));
+    let stream = bot.get_stream()
+        .filter_map(|(bot, update)| forward(bot, update, chat_id))
+        .map_err(|e| error!("Error: {:?}", e))
+        .for_each(|_| Ok(()));
 
-        let res: Result<(), ()> = lp.run(stream);
-
-        if let Err(e) = res {
-            error!("Loop ended! {:?}", e);
-        } else {
-            info!("Loop ended!");
-        }
-    }
+    lp.run(stream).unwrap();
 }
