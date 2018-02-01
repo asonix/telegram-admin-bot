@@ -27,22 +27,24 @@ pub fn admins<'a>(
     let msg = tup.1;
     let chat_id = msg.chat.id;
 
-    bot.unban_chat_administrators(chat_id).send().and_then(
-        move |(bot, members)| {
+    bot.unban_chat_administrators(chat_id)
+        .send()
+        .and_then(move |(bot, members)| {
             let usernames: Vec<_> = members
                 .iter()
-                .map(|member| if let Some(ref username) = member.user.username {
-                    let mut uname = String::from("@");
-                    uname.push_str(username.as_ref());
-                    uname
-                } else {
-                    String::from(member.user.first_name.as_ref())
+                .map(|member| {
+                    if let Some(ref username) = member.user.username {
+                        let mut uname = String::from("@");
+                        uname.push_str(username.as_ref());
+                        uname
+                    } else {
+                        String::from(member.user.first_name.as_ref())
+                    }
                 })
                 .collect();
 
             let text = usernames.join(" ");
 
             bot.message(chat_id, text).send()
-        },
-    )
+        })
 }
