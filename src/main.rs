@@ -13,23 +13,29 @@
 // You should have received a copy of the GNU General Public License
 // along with AdminBot  If not, see <http://www.gnu.org/licenses/>.
 
-extern crate telebot;
-extern crate tokio_core;
-extern crate futures;
-extern crate dotenv;
 extern crate admin_bot;
+extern crate dotenv;
+extern crate env_logger;
+extern crate futures;
 #[macro_use]
 extern crate log;
-extern crate env_logger;
+extern crate serde;
+extern crate serde_json;
+extern crate telebot;
+extern crate tokio_core;
+
+use std::collections::HashMap;
+use std::fs::File;
 
 use telebot::bot::RcBot;
 use tokio_core::reactor::Core;
-use futures::IntoFuture;
 use futures::stream::Stream;
 use futures::future::Future;
+use futures::sync::mpsc::channel;
 
 use telebot::functions::*;
 
+use admin_bot::STATES_JSON;
 use admin_bot::Config;
 use admin_bot::commands::*;
 
@@ -53,14 +59,10 @@ fn init_bot(bot: &RcBot) {
                 };
 
                 for (key, value) in pairs {
-                    bot.inner.handlers.borrow_mut().insert(
-                        format!(
-                            "{}@{}",
-                            key,
-                            username
-                        ),
-                        value,
-                    );
+                    bot.inner
+                        .handlers
+                        .borrow_mut()
+                        .insert(format!("{}@{}", key, username), value);
                 }
 
                 Ok(())
@@ -68,9 +70,8 @@ fn init_bot(bot: &RcBot) {
     );
 }
 
-
 fn main() {
-    env_logger::init().unwrap();
+    env_logger::init();
     info!("Starting bot");
     let config = Config::new();
 
@@ -83,16 +84,14 @@ fn main() {
 
     bot.register(bot.new_cmd("/start").and_then(start));
     bot.register(bot.new_cmd("/admins").and_then(admins));
-    bot.register(bot.new_cmd("/relay").and_then(move |(bot, msg)| {
-        relay(&bot, &msg, chat_id)
-    }));
-    bot.register(bot.new_cmd("/health").and_then(move |(bot, msg)| {
-        health_check(&bot, &msg)
-    }));
-
-    let stream = bot.get_stream().filter_map(|(bot, update)| {
-        forward(bot, update, chat_id)
-    });
+    bot.register(
+        bot.new_cmd("/relay")
+            .and_then(move |(bot, msg)| relay(&bot, &msg, chat_id)),
+    );
+    bot.register(
+        bot.new_cmd("/health")
+            .and_then(move |(bot, msg)| health_check(&bot, &msg)),
+    );
 
     bot.inner.handle.spawn(
         bot.message(chat_id, "Bot Started".into())
@@ -101,16 +100,24 @@ fn main() {
             .map_err(|e| error!("Error: {:?}", e)),
     );
 
-    let res: Result<(), ()> = lp.run(
-        stream
-            .map(|_| ())
-            .or_else(|e| {
-                error!("Error: {:?}", e);
-                Ok(())
-            })
-            .for_each(|_| Ok(()))
-            .into_future(),
-    );
+    let (tx, rx) = channel::<Active>(100);
 
-    res.unwrap();
+    let state = File::open(STATES_JSON)
+        .map_err(|_| ())
+        .and_then(|file| serde_json::from_reader(file).map_err(|_| ()))
+        .unwrap_or(HashMap::new());
+
+    bot.inner.handle.spawn(timeout_stream(
+        TimeoutState::from_hashmap(state, bot.clone()),
+        bot.clone(),
+        rx,
+    ));
+
+    let stream = bot.get_stream()
+        .filter_map(|(bot, update)| forward(bot, update, chat_id))
+        .and_then(move |(bot, update)| timeout(bot, update, tx.clone()))
+        .map_err(|e| error!("Error: {:?}", e))
+        .for_each(|_| Ok(()));
+
+    lp.run(stream).unwrap();
 }

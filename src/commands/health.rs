@@ -15,7 +15,7 @@
 
 use telebot::bot::RcBot;
 use telebot::objects::Message;
-use telebot::error::Error as BotError;
+use failure::Error;
 use futures::future::Future;
 
 use telebot::functions::*;
@@ -23,6 +23,6 @@ use telebot::functions::*;
 pub fn health_check<'a>(
     bot: &RcBot,
     msg: &Message,
-) -> impl Future<Item = (RcBot, Message), Error = BotError> + 'a {
+) -> impl Future<Item = (RcBot, Message), Error = Error> + 'a {
     bot.message(msg.chat.id, "Running".into()).send()
 }

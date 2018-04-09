@@ -13,11 +13,12 @@
 // You should have received a copy of the GNU General Public License
 // along with AdminBot  If not, see <http://www.gnu.org/licenses/>.
 
-#![feature(conservative_impl_trait)]
-
-extern crate telebot;
 extern crate dotenv;
+extern crate failure;
 extern crate futures;
+extern crate serde_json;
+extern crate telebot;
+extern crate tokio_timer;
 
 #[macro_use]
 extern crate log;
@@ -26,3 +27,5 @@ mod config;
 pub mod commands;
 
 pub use config::Config;
+
+pub static STATES_JSON: &str = "states.json";
