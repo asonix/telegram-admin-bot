@@ -71,7 +71,7 @@ fn init_bot(bot: &RcBot) {
 }
 
 fn main() {
-    env_logger::init().unwrap();
+    env_logger::init();
     info!("Starting bot");
     let config = Config::new();
 

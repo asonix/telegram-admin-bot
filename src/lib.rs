@@ -13,8 +13,6 @@
 // You should have received a copy of the GNU General Public License
 // along with AdminBot  If not, see <http://www.gnu.org/licenses/>.
 
-#![feature(conservative_impl_trait)]
-
 extern crate dotenv;
 extern crate failure;
 extern crate futures;
